@@ -30,6 +30,10 @@ function notiNewProject(socket) {
         project.project.members.forEach((member) => {
             const refdb = ref(dbnoti, "notification/" + member.username);
             push(refdb, {
+                type: "project",
+                idProject: "",
+                titleProject: project.project.titleProject,
+                titleTask: "",
                 namecreator: project.namecreator,
                 image: project.project.avtProject,
                 message: `Đã tạo dự án: ${project.project.titleProject}, có bạn là thành viên trong đó .`,
@@ -44,6 +48,22 @@ function notiNewProject(socket) {
     });
 }
 
+function notiNewTask(socket) {
+    socket.on("check-member-in-task", (data) => {
+        const refdb = ref(dbnoti, "notification/" + data.performer);
+        push(refdb, {
+            type: "task",
+            idProject: data.idProject,
+            titleProject: "",
+            titleTask: data.titleTask,
+            namecreator: data.namecreator,
+            image: data.image,
+            message: `Đã tạo công việc: ${data.titleTask}, có bạn là thành viên phụ trách .`,
+            time: `${data.date} ${data.time}`,
+            seen: false,
+        });
+    });
+}
 io.on("connection", (socket) => {
     console.log("có người connect");
     socket.on("Client-sent-username", (data) => {
@@ -51,6 +71,7 @@ io.on("connection", (socket) => {
         console.log(socket.username);
     });
     notiNewProject(socket);
+    notiNewTask(socket);
 });
 
 server.listen(port, () => {
