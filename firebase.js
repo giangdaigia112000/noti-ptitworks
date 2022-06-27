@@ -1,5 +1,6 @@
 const { initializeApp } = require("firebase/app");
 const { getDatabase } = require("firebase/database");
+const { getFirestore } = require("firebase/firestore");
 
 // TODO: Replace with your app's Firebase project configuration
 const firebaseConfig = {
@@ -16,5 +17,5 @@ const app = initializeApp(firebaseConfig);
 
 // Get a reference to the database service
 const dbnoti = getDatabase(app);
-
-module.exports = dbnoti;
+const db = getFirestore(app);
+module.exports = { dbnoti, db };
